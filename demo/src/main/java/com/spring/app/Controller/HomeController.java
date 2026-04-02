@@ -10,6 +10,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "index"; // busca index.html en templates
+        return "index"; // busca index.html en templatesdsvsdgdsgvsgsd
     }
 }
+
+//bfjkfajskfvaslkdfsdlfn
