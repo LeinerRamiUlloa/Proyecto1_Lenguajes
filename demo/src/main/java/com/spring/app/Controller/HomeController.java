@@ -1,4 +1,4 @@
-package com.spring.app.Controller;
+package com.spring.app.controller;
 
 
 
@@ -10,8 +10,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "index"; // busca index.html en templatesdsvsdgdsgvsgsd
+        return "index"; // busca index.html en templates
     }
 }
-
-//bfjkfajskfvaslkdfsdlfn
