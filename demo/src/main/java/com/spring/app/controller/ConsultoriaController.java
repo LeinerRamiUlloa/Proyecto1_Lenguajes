@@ -1,5 +1,6 @@
 package com.spring.app.controller;
 
+import com.spring.app.dto.ConsultoriaDTO;
 import com.spring.app.entity.Consultoria;
 import com.spring.app.repository.ConsultoriaRepository;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +18,54 @@ public class ConsultoriaController {
     }
 
     @GetMapping
-    public List<Consultoria> listar() {
-        return consultoriaRepository.findAll();
+    public List<ConsultoriaDTO> listar() {
+        return consultoriaRepository.findAll().stream()
+                .map(c -> new ConsultoriaDTO(
+                        c.getId(),
+                        c.getTipo(),
+                        c.getEstado().name(),
+                        c.getDescripcion(),
+                        c.getCliente().getId()
+                ))
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Consultoria obtener(@PathVariable Long id) {
-        return consultoriaRepository.findById(id).orElse(null);
+    public ConsultoriaDTO obtener(@PathVariable Long id) {
+        return consultoriaRepository.findById(id)
+                .map(c -> new ConsultoriaDTO(
+                        c.getId(),
+                        c.getTipo(),
+                        c.getEstado().name(),
+                        c.getDescripcion(),
+                        c.getCliente().getId()
+                ))
+                .orElse(null);
     }
 
     @PostMapping
-    public Consultoria crear(@RequestBody Consultoria consultoria) {
-        return consultoriaRepository.save(consultoria);
+    public ConsultoriaDTO crear(@RequestBody Consultoria consultoria) {
+        Consultoria saved = consultoriaRepository.save(consultoria);
+        return new ConsultoriaDTO(
+                saved.getId(),
+                saved.getTipo(),
+                saved.getEstado().name(),
+                saved.getDescripcion(),
+                saved.getCliente().getId()
+        );
     }
 
     @PutMapping("/{id}")
-    public Consultoria actualizar(@PathVariable Long id, @RequestBody Consultoria consultoria) {
+    public ConsultoriaDTO actualizar(@PathVariable Long id, @RequestBody Consultoria consultoria) {
         consultoria.setId(id);
-        return consultoriaRepository.save(consultoria);
+        Consultoria updated = consultoriaRepository.save(consultoria);
+        return new ConsultoriaDTO(
+                updated.getId(),
+                updated.getTipo(),
+                updated.getEstado().name(),
+                updated.getDescripcion(),
+                updated.getCliente().getId()
+        );
     }
 
     @DeleteMapping("/{id}")
@@ -42,4 +73,5 @@ public class ConsultoriaController {
         consultoriaRepository.deleteById(id);
     }
 }
+
 

@@ -1,5 +1,6 @@
 package com.spring.app.controller;
 
+import com.spring.app.dto.SolicitudDTO;
 import com.spring.app.entity.Solicitud;
 import com.spring.app.repository.SolicitudRepository;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +18,58 @@ public class SolicitudController {
     }
 
     @GetMapping
-    public List<Solicitud> listar() {
-        return solicitudRepository.findAll();
+    public List<SolicitudDTO> listar() {
+        return solicitudRepository.findAll().stream()
+                .map(s -> new SolicitudDTO(
+                        s.getId(),
+                        s.getDescripcion(),
+                        s.getEstado().name(),
+                        s.getFecha().toString(),
+                        s.getConsultoria().getId(),
+                        s.getUsuario().getId()
+                ))
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Solicitud obtener(@PathVariable Long id) {
-        return solicitudRepository.findById(id).orElse(null);
+    public SolicitudDTO obtener(@PathVariable Long id) {
+        return solicitudRepository.findById(id)
+                .map(s -> new SolicitudDTO(
+                        s.getId(),
+                        s.getDescripcion(),
+                        s.getEstado().name(),
+                        s.getFecha().toString(),
+                        s.getConsultoria().getId(),
+                        s.getUsuario().getId()
+                ))
+                .orElse(null);
     }
 
     @PostMapping
-    public Solicitud crear(@RequestBody Solicitud solicitud) {
-        return solicitudRepository.save(solicitud);
+    public SolicitudDTO crear(@RequestBody Solicitud solicitud) {
+        Solicitud saved = solicitudRepository.save(solicitud);
+        return new SolicitudDTO(
+                saved.getId(),
+                saved.getDescripcion(),
+                saved.getEstado().name(),
+                saved.getFecha().toString(),
+                saved.getConsultoria().getId(),
+                saved.getUsuario().getId()
+        );
     }
 
     @PutMapping("/{id}")
-    public Solicitud actualizar(@PathVariable Long id, @RequestBody Solicitud solicitud) {
+    public SolicitudDTO actualizar(@PathVariable Long id, @RequestBody Solicitud solicitud) {
         solicitud.setId(id);
-        return solicitudRepository.save(solicitud);
+        Solicitud updated = solicitudRepository.save(solicitud);
+        return new SolicitudDTO(
+                updated.getId(),
+                updated.getDescripcion(),
+                updated.getEstado().name(),
+                updated.getFecha().toString(),
+                updated.getConsultoria().getId(),
+                updated.getUsuario().getId()
+        );
     }
 
     @DeleteMapping("/{id}")
@@ -42,4 +77,5 @@ public class SolicitudController {
         solicitudRepository.deleteById(id);
     }
 }
+
 

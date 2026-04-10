@@ -1,5 +1,6 @@
 package com.spring.app.controller;
 
+import com.spring.app.dto.UsuarioDTO;
 import com.spring.app.entity.Usuario;
 import com.spring.app.repository.UsuarioRepository;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +17,30 @@ public class UsuarioController {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @GetMapping
-    public List<Usuario> listar() {
-        return usuarioRepository.findAll();
-    }
+   @GetMapping
+public List<UsuarioDTO> listar() {
+    return usuarioRepository.findAll().stream()
+        .map(u -> new UsuarioDTO(
+            u.getId(),
+            u.getEmail(),
+            u.getNombre(),
+            u.getRol().getNombre().name()
+        ))
+        .toList();
+}
 
-    @GetMapping("/{id}")
-    public Usuario obtener(@PathVariable Long id) {
-        return usuarioRepository.findById(id).orElse(null);
-    }
+@GetMapping("/{id}")
+public UsuarioDTO obtener(@PathVariable Long id) {
+    return usuarioRepository.findById(id)
+        .map(u -> new UsuarioDTO(
+            u.getId(),
+            u.getEmail(),
+            u.getNombre(),
+            u.getRol().getNombre().name()
+        ))
+        .orElse(null);
+}
+
 
     @PostMapping
     public Usuario crear(@RequestBody Usuario usuario) {

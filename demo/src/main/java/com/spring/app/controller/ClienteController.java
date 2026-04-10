@@ -1,5 +1,6 @@
 package com.spring.app.controller;
 
+import com.spring.app.dto.ClienteDTO;
 import com.spring.app.entity.Cliente;
 import com.spring.app.repository.ClienteRepository;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +18,54 @@ public class ClienteController {
     }
 
     @GetMapping
-    public List<Cliente> listar() {
-        return clienteRepository.findAll();
+    public List<ClienteDTO> listar() {
+        return clienteRepository.findAll().stream()
+                .map(c -> new ClienteDTO(
+                        c.getId(),
+                        c.getEmpresa(),
+                        c.getNombre(),
+                        c.getTelefono(),
+                        c.getCorreo()
+                ))
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Cliente obtener(@PathVariable Long id) {
-        return clienteRepository.findById(id).orElse(null);
+    public ClienteDTO obtener(@PathVariable Long id) {
+        return clienteRepository.findById(id)
+                .map(c -> new ClienteDTO(
+                        c.getId(),
+                        c.getEmpresa(),
+                        c.getNombre(),
+                        c.getTelefono(),
+                        c.getCorreo()
+                ))
+                .orElse(null);
     }
 
     @PostMapping
-    public Cliente crear(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public ClienteDTO crear(@RequestBody Cliente cliente) {
+        Cliente saved = clienteRepository.save(cliente);
+        return new ClienteDTO(
+                saved.getId(),
+                saved.getEmpresa(),
+                saved.getNombre(),
+                saved.getTelefono(),
+                saved.getCorreo()
+        );
     }
 
     @PutMapping("/{id}")
-    public Cliente actualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ClienteDTO actualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
         cliente.setId(id);
-        return clienteRepository.save(cliente);
+        Cliente updated = clienteRepository.save(cliente);
+        return new ClienteDTO(
+                updated.getId(),
+                updated.getEmpresa(),
+                updated.getNombre(),
+                updated.getTelefono(),
+                updated.getCorreo()
+        );
     }
 
     @DeleteMapping("/{id}")
@@ -42,4 +73,5 @@ public class ClienteController {
         clienteRepository.deleteById(id);
     }
 }
+
 
