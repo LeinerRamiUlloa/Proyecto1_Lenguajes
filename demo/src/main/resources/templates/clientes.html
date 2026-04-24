@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,10 +32,10 @@
             <div class="row align-items-center g-4">
                 <div class="col-lg-8">
                     <span class="badge text-bg-primary mb-3">Modulo de clientes</span>
-                    <h1 class="display-6 fw-bold mb-3" style="font-family: 'Poppins', sans-serif; color: #1d4ed8;">Explora la informacion principal de tus clientes.</h1>
+                    <h1 class="display-6 fw-bold mb-3" style="font-family: 'Poppins', sans-serif; color: #1d4ed8;">Administra los clientes desde una sola vista.</h1>
                     <p class="lead text-secondary mb-0">
-                        Esta vista sirve para centralizar empresas, contactos y datos clave
-                        de forma clara, moderna y lista para conectarse con tu backend.
+                        Esta pantalla usa el flujo MVC del proyecto para listar, crear,
+                        editar y eliminar clientes desde el servidor.
                     </p>
                 </div>
                 <div class="col-lg-4">
@@ -43,7 +43,7 @@
                         <div class="card-body p-4">
                             <h2 class="h5 mb-3" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Acciones rapidas</h2>
                             <div class="d-grid gap-2">
-                                <a href="/" class="btn btn-primary">Volver al inicio</a>
+                                <a href="/vista/clientes/nuevo" class="btn btn-primary">Nuevo cliente</a>
                                 <a href="/vista/consultorias" class="btn btn-outline-secondary">Ver consultorias</a>
                             </div>
                         </div>
@@ -55,42 +55,17 @@
 
     <main class="py-5">
         <div class="container">
-            <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="h5" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Empresas registradas</h3>
-                            <p class="text-secondary mb-0">Visualiza el nombre comercial y organiza mejor tu cartera.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="h5" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Contactos directos</h3>
-                            <p class="text-secondary mb-0">Ten a mano nombres, telefonos y correos de referencia.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="h5" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Preparado para crecer</h3>
-                            <p class="text-secondary mb-0">La estructura queda lista para integrarse con tablas dinamicas.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <section class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                         <div>
                             <h2 class="h4 mb-1" style="font-family: 'Poppins', sans-serif; color: #1e3a8a;">Listado de clientes</h2>
-                            <p class="text-secondary mb-0">Aqui puedes mostrar la informacion principal de cada cliente.</p>
+                            <p class="text-secondary mb-0">Registros cargados desde `ClienteViewController` y `ClienteService`.</p>
                         </div>
-                        <button class="btn btn-primary">Nuevo cliente</button>
+                        <a class="btn btn-primary" href="/vista/clientes/nuevo">Nuevo cliente</a>
                     </div>
+
+                    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -101,8 +76,29 @@
                                     <th>Empresa</th>
                                     <th>Telefono</th>
                                     <th>Correo</th>
+                                    <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(clientes)}">
+                                    <td colspan="6" class="text-center text-secondary py-4">No hay clientes registrados todavia.</td>
+                                </tr>
+                                <tr th:each="cliente : ${clientes}">
+                                    <td th:text="${cliente.id}"></td>
+                                    <td th:text="${cliente.nombre}"></td>
+                                    <td th:text="${cliente.empresa != null and !#strings.isEmpty(cliente.empresa) ? cliente.empresa : '-'}"></td>
+                                    <td th:text="${cliente.telefono}"></td>
+                                    <td th:text="${cliente.correo}"></td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-2">
+                                            <a class="btn btn-sm btn-outline-primary" th:href="@{/vista/clientes/editar/{id}(id=${cliente.id})}">Editar</a>
+                                            <form th:action="@{/vista/clientes/eliminar/{id}(id=${cliente.id})}" method="post" class="m-0">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

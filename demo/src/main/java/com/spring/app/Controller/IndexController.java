@@ -10,21 +10,6 @@ public class IndexController {
         return "index"; 
     }
 
-    @GetMapping("/vista/clientes")
-    public String clientes() {
-        return "clientes";
-    }
-
-    @GetMapping("/vista/consultorias")
-    public String consultorias() {
-        return "consultorias";
-    }
-
-    @GetMapping("/vista/solicitudes")
-    public String solicitudes() {
-        return "solicitudes";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "login";

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,10 +32,10 @@
             <div class="row align-items-center g-4">
                 <div class="col-lg-8">
                     <span class="badge text-bg-primary mb-3">Modulo de consultorias</span>
-                    <h1 class="display-6 fw-bold mb-3" style="font-family: 'Poppins', sans-serif; color: #1d4ed8;">Haz seguimiento claro al estado de cada consultoria.</h1>
+                    <h1 class="display-6 fw-bold mb-3" style="font-family: 'Poppins', sans-serif; color: #1d4ed8;">Gestiona el ciclo completo de cada consultoria.</h1>
                     <p class="lead text-secondary mb-0">
-                        Esta vista resume el tipo de servicio, el cliente asociado y el estado
-                        del proceso en una presentacion sencilla y profesional.
+                        La vista se renderiza desde el backend y usa la capa `service`
+                        que ya existia en el proyecto.
                     </p>
                 </div>
                 <div class="col-lg-4">
@@ -43,7 +43,7 @@
                         <div class="card-body p-4">
                             <h2 class="h5 mb-3" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Acciones rapidas</h2>
                             <div class="d-grid gap-2">
-                                <a href="/" class="btn btn-primary">Volver al inicio</a>
+                                <a href="/vista/consultorias/nueva" class="btn btn-primary">Nueva consultoria</a>
                                 <a href="/vista/clientes" class="btn btn-outline-secondary">Explorar clientes</a>
                             </div>
                         </div>
@@ -55,42 +55,17 @@
 
     <main class="py-5">
         <div class="container">
-            <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="h5" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Tipos de servicio</h3>
-                            <p class="text-secondary mb-0">Organiza consultorias legales, ambientales o industriales.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="h5" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Estados visibles</h3>
-                            <p class="text-secondary mb-0">Consulta si cada proceso esta pendiente, en proceso o finalizado.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h3 class="h5" style="font-family: 'Poppins', sans-serif; color: #0f172a;">Base lista para integracion</h3>
-                            <p class="text-secondary mb-0">El diseño ya puede conectarse luego con datos reales del sistema.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <section class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                         <div>
                             <h2 class="h4 mb-1" style="font-family: 'Poppins', sans-serif; color: #1e3a8a;">Listado de consultorias</h2>
-                            <p class="text-secondary mb-0">Resumen general del trabajo activo dentro de la plataforma.</p>
+                            <p class="text-secondary mb-0">Datos cargados desde `ConsultoriaViewController`.</p>
                         </div>
-                        <button class="btn btn-primary">Nueva consultoria</button>
+                        <a class="btn btn-primary" href="/vista/consultorias/nueva">Nueva consultoria</a>
                     </div>
+
+                    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -101,8 +76,29 @@
                                     <th>Cliente</th>
                                     <th>Estado</th>
                                     <th>Descripcion</th>
+                                    <th class="text-end">Acciones</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(consultorias)}">
+                                    <td colspan="6" class="text-center text-secondary py-4">No hay consultorias registradas todavia.</td>
+                                </tr>
+                                <tr th:each="consultoria : ${consultorias}">
+                                    <td th:text="${consultoria.id}"></td>
+                                    <td th:text="${consultoria.tipo}"></td>
+                                    <td th:text="${consultoria.cliente.nombre}"></td>
+                                    <td><span class="badge text-bg-light border" th:text="${consultoria.estado}"></span></td>
+                                    <td th:text="${consultoria.descripcion}"></td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-2">
+                                            <a class="btn btn-sm btn-outline-primary" th:href="@{/vista/consultorias/editar/{id}(id=${consultoria.id})}">Editar</a>
+                                            <form th:action="@{/vista/consultorias/eliminar/{id}(id=${consultoria.id})}" method="post" class="m-0">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

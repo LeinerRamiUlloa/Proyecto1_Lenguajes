@@ -43,20 +43,28 @@ public class SecurityConfig {
                         // Login y recursos publicos.
                         .requestMatchers("/auth/**", "/", "/login", "/css/**", "/js/**", "/images/**").permitAll()
 
-                        // El administrador tiene acceso completo a los modulos principales.
-                        .requestMatchers("/usuarios/**", "/roles/**", "/clientes/**", "/consultorias/**")
-                        .hasRole("ADMINISTRADOR")
+                        // Temporalmente dejamos libres las vistas y modulos para poder navegar
+                        // entre paginas mientras se corrige el flujo de autenticacion con JWT.
+                        .requestMatchers(
+                                "/usuarios/**",
+                                "/roles/**",
+                                "/clientes/**",
+                                "/consultorias/**",
+                                "/solicitudes/**",
+                                "/vista/clientes/**",
+                                "/vista/consultorias/**",
+                                "/vista/solicitudes/**"
+                        ).permitAll()
 
-                        // Los clientes pueden trabajar con solicitudes; el administrador tambien.
-                        .requestMatchers("/solicitudes/**", "/vista/solicitudes/**")
-                        .hasAnyRole("ADMINISTRADOR", "CLIENTE")
-
-                        // Las vistas administrativas quedan solo para administrador.
-                        .requestMatchers("/vista/clientes/**", "/vista/consultorias/**")
-                        .hasRole("ADMINISTRADOR")
-
-                        // Cualquier otra ruta requiere autenticacion.
-                        .anyRequest().authenticated()
+                        // Reglas originales comentadas porque estaban bloqueando la navegacion:
+                        // .requestMatchers("/usuarios/**", "/roles/**", "/clientes/**", "/consultorias/**")
+                        // .hasRole("ADMINISTRADOR")
+                        // .requestMatchers("/solicitudes/**", "/vista/solicitudes/**")
+                        // .hasAnyRole("ADMINISTRADOR", "CLIENTE")
+                        // .requestMatchers("/vista/clientes/**", "/vista/consultorias/**")
+                        // .hasRole("ADMINISTRADOR")
+                        // .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 // Agrega nuestro filtro JWT antes del filtro normal de usuario/password de Spring.

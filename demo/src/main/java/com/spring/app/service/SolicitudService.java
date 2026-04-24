@@ -38,7 +38,9 @@ public class SolicitudService {
 
         solicitudExistente.setDescripcion(solicitudActualizada.getDescripcion());
         solicitudExistente.setEstado(solicitudActualizada.getEstado());
+        solicitudExistente.setFecha(solicitudActualizada.getFecha());
         solicitudExistente.setConsultoria(solicitudActualizada.getConsultoria());
+        solicitudExistente.setUsuario(solicitudActualizada.getUsuario());
 
         return solicitudRepository.save(solicitudExistente);
     }
