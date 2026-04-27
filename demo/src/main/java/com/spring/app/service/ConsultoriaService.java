@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.app.entity.Consultoria;
 import com.spring.app.repository.ConsultoriaRepository;
@@ -28,8 +29,9 @@ public class ConsultoriaService {
         return consultoriaRepository.findById(id);
     }
 
-    public void deleteById(Long id) {
-        consultoriaRepository.deleteById(id);
+    @Transactional
+    public boolean deleteById(Long id) {
+        return consultoriaRepository.deleteConsultoriaById(id) > 0;
     }
 
     public Consultoria update(Long id, Consultoria consultoriaActualizada) {

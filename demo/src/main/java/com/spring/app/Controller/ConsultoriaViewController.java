@@ -17,7 +17,7 @@ import com.spring.app.service.ClienteService;
 import com.spring.app.service.ConsultoriaService;
 
 @Controller
-@RequestMapping("/vista/consultorias")
+@RequestMapping({"/vista/consultorias", "/vista/consultoria"})
 public class ConsultoriaViewController {
 
     private final ConsultoriaService consultoriaService;
@@ -77,8 +77,12 @@ public class ConsultoriaViewController {
 
     @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        consultoriaService.deleteById(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Consultoria eliminada correctamente.");
+        boolean eliminada = consultoriaService.deleteById(id);
+        if (eliminada) {
+            redirectAttributes.addFlashAttribute("successMessage", "Consultoria eliminada correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "No se encontro la consultoria indicada.");
+        }
         return "redirect:/vista/consultorias";
     }
 

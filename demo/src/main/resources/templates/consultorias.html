@@ -86,9 +86,9 @@
                                 <tr th:each="consultoria : ${consultorias}">
                                     <td th:text="${consultoria.id}"></td>
                                     <td th:text="${consultoria.tipo}"></td>
-                                    <td th:text="${consultoria.cliente.nombre}"></td>
-                                    <td><span class="badge text-bg-light border" th:text="${consultoria.estado}"></span></td>
-                                    <td th:text="${consultoria.descripcion}"></td>
+                                    <td th:text="${consultoria.cliente != null ? consultoria.cliente.nombre : 'Sin cliente'}"></td>
+                                    <td><span class="badge text-bg-light border" th:text="${consultoria.estado != null ? consultoria.estado : 'Sin estado'}"></span></td>
+                                    <td th:text="${consultoria.descripcion != null ? consultoria.descripcion : 'Sin descripcion'}"></td>
                                     <td class="text-end">
                                         <div class="d-inline-flex gap-2">
                                             <a class="btn btn-sm btn-outline-primary" th:href="@{/vista/consultorias/editar/{id}(id=${consultoria.id})}">Editar</a>
