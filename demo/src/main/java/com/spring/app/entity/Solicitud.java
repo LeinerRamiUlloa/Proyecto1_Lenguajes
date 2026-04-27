@@ -25,6 +25,15 @@ public class Solicitud {
     private Long id;
 
     @Column(nullable = false)
+    private String nombreSolicitante;
+
+    @Column(nullable = false)
+    private String correoSolicitante;
+
+    @Column(nullable = false)
+    private String tipoServicio;
+
+    @Column(nullable = false)
     private String descripcion;
 
     @Enumerated(EnumType.STRING)
@@ -40,4 +49,3 @@ public class Solicitud {
     @JoinColumn(name = "consultoria_id", nullable = false)
     private Consultoria consultoria;
 }
-

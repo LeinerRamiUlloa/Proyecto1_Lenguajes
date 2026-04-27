@@ -39,7 +39,6 @@ public class ConsultoriaService {
         consultoriaExistente.setTipo(consultoriaActualizada.getTipo());
         consultoriaExistente.setEstado(consultoriaActualizada.getEstado());
         consultoriaExistente.setDescripcion(consultoriaActualizada.getDescripcion());
-        consultoriaExistente.setCliente(consultoriaActualizada.getCliente());
 
         return consultoriaRepository.save(consultoriaExistente);
     }
