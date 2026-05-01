@@ -111,8 +111,17 @@ public class SolicitudViewController {
             solicitudForm.setUsuarioId(solicitud.getUsuario().getId());
         }
 
+        Cliente selectedCliente = solicitud.getCliente();
+        if (selectedCliente == null && solicitud.getCorreoSolicitante() != null) {
+            selectedCliente = clienteService.findByCorreo(solicitud.getCorreoSolicitante()).orElse(null);
+            if (selectedCliente != null) {
+                solicitudForm.setClienteId(selectedCliente.getId());
+            }
+        }
+
         cargarDatosFormulario(model);
         model.addAttribute("solicitudForm", solicitudForm);
+        model.addAttribute("selectedCliente", selectedCliente);
         model.addAttribute("formTitle", "Gestionar solicitud");
         model.addAttribute("formAction", "/vista/solicitudes/editar/" + id);
         model.addAttribute("isEdit", true);
@@ -122,6 +131,19 @@ public class SolicitudViewController {
     @PostMapping("/editar/{id}")
     public String actualizar(@PathVariable Long id, @ModelAttribute SolicitudForm solicitudForm, RedirectAttributes redirectAttributes) {
         requireAdmin();
+
+        Solicitud solicitudExistente = solicitudService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada con id: " + id));
+
+        solicitudForm.setNombreSolicitante(solicitudExistente.getNombreSolicitante());
+        solicitudForm.setCorreoSolicitante(solicitudExistente.getCorreoSolicitante());
+        Long clienteId = solicitudExistente.getCliente() != null
+                ? solicitudExistente.getCliente().getId()
+                : clienteService.findByCorreo(solicitudExistente.getCorreoSolicitante())
+                        .map(Cliente::getId)
+                        .orElse(null);
+        solicitudForm.setClienteId(clienteId);
+        solicitudForm.setUsuarioId(solicitudExistente.getUsuario() != null ? solicitudExistente.getUsuario().getId() : null);
 
         solicitudService.update(id, mapToEntity(solicitudForm));
         redirectAttributes.addFlashAttribute("successMessage", "Solicitud actualizada correctamente.");
