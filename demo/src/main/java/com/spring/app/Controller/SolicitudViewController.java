@@ -1,4 +1,4 @@
-package com.spring.app.controller;
+package com.spring.app.Controller;
 
 import java.time.LocalDate;
 import java.util.Optional;

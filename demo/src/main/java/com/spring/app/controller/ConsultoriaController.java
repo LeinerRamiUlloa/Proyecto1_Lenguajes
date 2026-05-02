@@ -1,4 +1,4 @@
-package com.spring.app.controller;
+package com.spring.app.Controller;
 
 import com.spring.app.dto.ConsultoriaForm;
 import com.spring.app.dto.ConsultoriaDTO;

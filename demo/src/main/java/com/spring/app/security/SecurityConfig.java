@@ -46,7 +46,7 @@ public class SecurityConfig {
                                 "/",
                                 "/login",
                                 "/registro",
-                                "/app.css",
+                                "/Style.css",
                                 "/Style.css",
                                 "/css/**",
                                 "/js/**",
